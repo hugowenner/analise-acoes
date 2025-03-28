@@ -1,6 +1,7 @@
 # main.py
 
 from analise_acao import AnalisadorAcoes
+from banco_dados import salvar_dados_banco  # Se você tiver essa função implementada
 
 if __name__ == "__main__":
     # Lista de ações a serem analisadas (mais de 50 ações)
@@ -19,12 +20,22 @@ if __name__ == "__main__":
     
     # Inicializa a tabela do banco de dados (se ainda não foi criada)
     analise = AnalisadorAcoes("PETR4.SA")  # Inicializa com qualquer ação
-    analise.criar_tabela()
+    analise.criar_tabela()  # Criar a tabela no banco de dados, se não existir
     
     # Executa a análise para todas as ações da lista
     for acao in acoes:
         print("\n" + "="*50)
-        analise = AnalisadorAcoes(acao)
-        analise.executar_analise()
+        print(f"Analisando {acao}...")
+        
+        try:
+            analise = AnalisadorAcoes(acao)
+            recomendacao = analise.executar_analise()  # Obtém a recomendação
+            salvar_dados_banco(acao, recomendacao)  # Armazena os dados no banco
+
+            # Exibe a recomendação
+            print(f"Recomendação para {acao}: {recomendacao}")
+        except Exception as e:
+            print(f"Erro ao analisar {acao}: {e}")
+        
         print("="*50)
 
